@@ -1,0 +1,139 @@
+[1mdiff --git a/src/main/java/br/ce/wcaquino/taskbackend/controller/TaskController.java b/src/main/java/br/ce/wcaquino/taskbackend/controller/TaskController.java[m
+[1mindex 2b92813..2466d4a 100644[m
+[1m--- a/src/main/java/br/ce/wcaquino/taskbackend/controller/TaskController.java[m
+[1m+++ b/src/main/java/br/ce/wcaquino/taskbackend/controller/TaskController.java[m
+[36m@@ -41,5 +41,7 @@[m [mpublic class TaskController {[m
+ 		}[m
+ 		Task saved = todoRepo.save(todo);[m
+ 		return new ResponseEntity<Task>(saved, HttpStatus.CREATED);[m
+[32m+[m[41m		[m
+[32m+[m[41m		[m
+ 	}[m
+ }[m
+[1mdiff --git a/src/main/java/br/ce/wcaquino/taskbackend/utils/DateUtils.java b/src/main/java/br/ce/wcaquino/taskbackend/utils/DateUtils.java[m
+[1mindex d065370..96c192e 100644[m
+[1m--- a/src/main/java/br/ce/wcaquino/taskbackend/utils/DateUtils.java[m
+[1m+++ b/src/main/java/br/ce/wcaquino/taskbackend/utils/DateUtils.java[m
+[36m@@ -8,3 +8,4 @@[m [mpublic class DateUtils {[m
+ 		return date.isEqual(LocalDate.now()) || date.isAfter(LocalDate.now());[m
+ 	}[m
+ }[m
+[41m+[m
+[1mdiff --git a/src/test/java/br/ce/wcaquino/taskbackend/controller/TaskControllerTest.java b/src/test/java/br/ce/wcaquino/taskbackend/controller/TaskControllerTest.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..14b3a4f[m
+[1m--- /dev/null[m
+[1m+++ b/src/test/java/br/ce/wcaquino/taskbackend/controller/TaskControllerTest.java[m
+[36m@@ -0,0 +1,79 @@[m
+[32m+[m[32mpackage br.ce.wcaquino.taskbackend.controller;[m
+[32m+[m
+[32m+[m[32mimport java.time.LocalDate;[m
+[32m+[m
+[32m+[m[32mimport org.junit.Test;[m
+[32m+[m[32mimport org.mockito.InjectMocks;[m
+[32m+[m[32mimport org.mockito.Mock;[m
+[32m+[m[32mimport org.mockito.Mockito;[m
+[32m+[m[32mimport org.mockito.MockitoAnnotations;[m
+[32m+[m
+[32m+[m[32mimport br.ce.wcaquino.taskbackend.model.Task;[m
+[32m+[m[32mimport br.ce.wcaquino.taskbackend.repo.TaskRepo;[m
+[32m+[m[32mimport br.ce.wcaquino.taskbackend.utils.ValidationException;[m
+[32m+[m[32mimport org.junit.Assert;[m
+[32m+[m[32mimport org.junit.Before;[m
+[32m+[m
+[32m+[m[32mpublic class TaskControllerTest {[m
+[32m+[m[41m    [m
+[32m+[m	[32m@Mock[m
+[32m+[m	[32mprivate TaskRepo taskRepo;[m
+[32m+[m[41m    [m
+[32m+[m	[32m@InjectMocks[m
+[32m+[m	[32mprivate TaskController controller;[m
+[32m+[m[41m	[m
+[32m+[m	[32m@Before[m
+[32m+[m	[32m  public void setup() {[m
+[32m+[m		[32mMockitoAnnotations.initMocks(this);[m
+[32m+[m	[32m}[m
+[32m+[m[41m	  [m
+[32m+[m[41m	[m
+[32m+[m	[32m@Test[m
+[32m+[m	[32mpublic void naoDeveSalvarTarefaSemDescricao() {[m
+[32m+[m[41m    [m	[32mTask todo = new Task();[m
+[32m+[m[32m        todo.setDueDate(LocalDate.now());[m
+[32m+[m	[41m   [m	[32mtry {[m
+[32m+[m			[32mcontroller.save(todo);[m
+[32m+[m			[32mAssert.fail("Não deveria chegar neste ponto!");[m
+[32m+[m		[32m} catch (ValidationException e) {[m
+[32m+[m[32m          Assert.assertEquals("Fill the task description", e.getMessage());[m
+[32m+[m		[32m}[m[41m	[m
+[32m+[m[32m        }[m
+[32m+[m[41m    [m
+[32m+[m[32m    @Test[m
+[32m+[m	[32mpublic void naoDeveSalvarTarefaSemData() {[m
+[32m+[m[41m    [m	[32mTask todo = new Task();[m
+[32m+[m[41m    [m	[32mtodo.setTask("Descricao");[m
+[32m+[m	[41m   [m	[32mtry {[m
+[32m+[m			[32mcontroller.save(todo);[m
+[32m+[m			[32mAssert.fail("Não deveria chegar neste ponto!");[m
+[32m+[m		[32m} catch (ValidationException e) {[m
+[32m+[m[32m          Assert.assertEquals("Fill the due date", e.getMessage());[m
+[32m+[m		[32m}[m
+[32m+[m[32m    }[m
+[32m+[m[41m	[m
+[32m+[m[41m    [m
+[32m+[m[32m    @Test[m
+[32m+[m	[32mpublic void naoDeveSalvarTarefaComDataPassada() {[m
+[32m+[m[41m    [m	[32mTask todo = new Task();[m
+[32m+[m[41m    [m	[32mtodo.setTask("Descricao");[m
+[32m+[m[32m        todo.setDueDate(LocalDate.of(2010, 01 , 01));[m
+[32m+[m	[41m   [m	[32mtry {[m
+[32m+[m			[32mcontroller.save(todo);[m
+[32m+[m			[32mAssert.fail("Não deveria chegar neste ponto!");[m
+[32m+[m		[32m} catch (ValidationException e) {[m
+[32m+[m[32m          Assert.assertEquals("Due date must not be in past", e.getMessage());[m
+[32m+[m		[32m}[m[41m	[m
+[32m+[m[32m    }[m
+[32m+[m[41m	[m
+[32m+[m[32m    @Test[m
+[32m+[m	[32mpublic void DeveSalvarTarefaComSucesso() throws ValidationException{[m
+[32m+[m[41m    [m	[32mTask todo = new Task();[m
+[32m+[m[41m    [m	[32mtodo.setTask("Descricao");[m
+[32m+[m[41m    [m	[32mtodo.setDueDate(LocalDate.now());[m
+[32m+[m		[32mcontroller.save(todo);[m
+[32m+[m[32m        Mockito.verify(taskRepo).save(todo);[m
+[32m+[m[41m        [m
+[32m+[m[32m    }[m
+[32m+[m[41m	[m
+[32m+[m[32m}[m
+[1mdiff --git a/src/test/java/br/ce/wcaquino/taskbackend/utils/DateUtilsTest.java b/src/test/java/br/ce/wcaquino/taskbackend/utils/DateUtilsTest.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..4dbd66d[m
+[1m--- /dev/null[m
+[1m+++ b/src/test/java/br/ce/wcaquino/taskbackend/utils/DateUtilsTest.java[m
+[36m@@ -0,0 +1,27 @@[m
+[32m+[m[32mpackage br.ce.wcaquino.taskbackend.utils;[m
+[32m+[m
+[32m+[m[32mimport java.time.LocalDate;[m
+[32m+[m
+[32m+[m[32mimport org.junit.Assert;[m
+[32m+[m[32mimport org.junit.Test;[m
+[32m+[m
+[32m+[m[32mpublic class DateUtilsTest {[m
+[32m+[m
+[32m+[m	[32m@Test[m
+[32m+[m	[32mpublic void deveRetornarTrueParaDatasFuturas() {[m
+[32m+[m		[32mLocalDate date = LocalDate.of(2030, 01, 01);[m
+[32m+[m		[32mAssert.assertTrue(DateUtils.isEqualOrFutureDate(date));[m
+[32m+[m	[32m}[m
+[32m+[m[41m	[m
+[32m+[m	[32m@Test[m
+[32m+[m	[32mpublic void deveRetornarFalseParaDatasPassadas() {[m
+[32m+[m		[32mLocalDate date = LocalDate.of(2010, 01, 01);[m
+[32m+[m		[32mAssert.assertFalse(DateUtils.isEqualOrFutureDate(date));[m
+[32m+[m	[32m}[m
+[32m+[m
+[32m+[m	[32m@Test[m
+[32m+[m	[32mpublic void deveRetornarTrueParaDataAtual() {[m
+[32m+[m		[32mLocalDate date = LocalDate.now();[m
+[32m+[m		[32mAssert.assertTrue(DateUtils.isEqualOrFutureDate(date));[m
+[32m+[m	[32m}[m
+[32m+[m[32m}[m
