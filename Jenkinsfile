@@ -1,11 +1,21 @@
-pipeline {
-    agente any
-    stages{
-        stage ('Just Test'){
+pipeline{
+    agent any
+    stages {
+        stage ('Inicio'){
+            steps {
+                bat 'echo Inicio!!'
+            }
+        }
+        stage ('Meio'){
             steps{
-                bat 'echo deu certo!'
+                bat 'echo Meio!!'
+            }
+        }
+        stage ('Fim'){
+            steps{
+                sleep(5)
+                bat 'echo Fim!!'
             }
         }
     }
-
-}
+} 
