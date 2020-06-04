@@ -1,20 +1,9 @@
 pipeline{
     agent any
     stages {
-        stage ('Inicio'){
+        stage ('Build Backend'){
             steps {
-                bat 'echo Inicio!!'
-            }
-        }
-        stage ('Meio'){
-            steps{
-                bat 'echo Meio!!'
-            }
-        }
-        stage ('Fim'){
-            steps{
-                sleep(5)
-                bat 'echo Fim!!'
+                bat 'mvn clean package -DskipTests=true'
             }
         }
     }
