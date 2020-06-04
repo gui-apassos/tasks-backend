@@ -17,7 +17,7 @@ pipeline{
             }
             steps {
                 withSonarQubeEnv('SONAR_LOCAL'){
-                    bat "echo ${scannerHome}"
+                    bat "echo ${scannerHome} fim!!"
                 }
             }    
         }
