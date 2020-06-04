@@ -11,7 +11,7 @@ pipeline{
                 bat 'mvn test'
             }
         }
-        stage ('Unit Analysus'){
+        stage ('Sonar Analysis'){
             environment{
                 scannerHome = toll 'SONAR_SCANNER'
             }
