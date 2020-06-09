@@ -14,11 +14,11 @@ pipeline{
         stage ('Sonar Analysis'){
             environment{
                 scannerHome = tool 'SONAR_SCANNER'
-                scannerLocal = "${scannerHome}/bin"
+                scannerLocal = "cd ${scannerHome}/bin"
             }
             steps {
                 withSonarQubeEnv('SONAR_LOCAL'){
-                    bat "echo ${scannerLocal}/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=180cc27e356e3e61334836b950d86db63afeddfd -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/mvn/**,**/src/test/**,**/model/**,**Application.java"
+                    bat "sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=180cc27e356e3e61334836b950d86db63afeddfd -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/mvn/**,**/src/test/**,**/model/**,**Application.java"
                 }
             }    
         }
