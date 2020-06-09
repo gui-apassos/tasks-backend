@@ -14,7 +14,7 @@ pipeline{
         stage ('Sonar Analysis'){
             environment{
                 scannerHome = tool 'SONAR_SCANNER'
-                scannerLocal = "cd ${scannerHome}/bin"
+                scannerLocal = bat label: '', script: 'cd ${scannerHome}/bin'
             }
             steps {
                 withSonarQubeEnv('SONAR_LOCAL'){
