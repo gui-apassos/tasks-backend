@@ -37,8 +37,11 @@ pipeline{
         }
         stage ('API Test'){
             steps{
+                dir('api-test'){
                 git credentialsId: 'github_login', url: 'https://github.com/gui-apassos/tasks-api-test'
                 bat 'mvn test'
+                
+                }
             }
         }
     }
